@@ -1,0 +1,22 @@
+{
+  "name": "core",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon -r dotenv/config server/index.ts"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "koa": "^2.5.3",
+    "koa-router": "^7.4.0",
+    "typescript": "^3.1.3"
+  },
+  "devDependencies": {
+    "@types/node": "^10.12.0",
+    "dotenv": "^6.1.0",
+    "nodemon": "^1.18.4",
+    "ts-node": "^7.0.1"
+  }
+}
