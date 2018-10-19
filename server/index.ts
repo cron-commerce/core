@@ -1,6 +1,8 @@
 import * as Koa from 'koa'
 import * as Router from 'koa-router'
 
+import initTypeorm from './init-typeorm'
+
 const port = 3000
 
 const app = new Koa()
@@ -14,3 +16,5 @@ app
 .use(router.routes())
 .use(router.allowedMethods())
 .listen(port)
+
+initTypeorm()
