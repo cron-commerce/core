@@ -1,4 +1,5 @@
 import 'reflect-metadata'
+
 import {createConnection} from 'typeorm'
 
-export default () => createConnection().catch(error => console.log(error))
+export default () => createConnection().catch(e => console.error(e))

@@ -1,4 +1,4 @@
-import {Column, Entity, getManager, Index, PrimaryGeneratedColumn} from 'typeorm'
+import {Column, Entity, Index, PrimaryGeneratedColumn} from 'typeorm'
 
 @Entity({name: 'shops'})
 export class Shop {
