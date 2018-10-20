@@ -9,7 +9,7 @@ const typeDef = `
   }
 
   extend type Mutation {
-    createUser(email: String!): User
+    createUser(email: String!, password: String!): User
   }
 
   extend type Query {
@@ -24,6 +24,7 @@ export const resolvers = {
     createUser: async (obj, args, context, info) => {
       const entityManager = getManager()
       const user = new User()
+      user.password = args.password
       user.email = args.email
       await entityManager.save(user)
       return user
