@@ -5,7 +5,7 @@ import * as Router from 'koa-router'
 import serveGraphql from './serve-graphql'
 import initTypeorm from './init-typeorm'
 
-const port = 3000
+const port = parseInt(process.env.PORT, 10) || 3000
 
 const app = new Koa()
 const router = new Router()
