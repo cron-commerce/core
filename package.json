@@ -11,6 +11,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "apollo-server-koa": "^2.1.0",
+    "graphql": "^14.0.2",
     "koa": "^2.5.3",
     "koa-router": "^7.4.0",
     "mysql": "^2.16.0",
