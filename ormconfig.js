@@ -7,8 +7,8 @@ module.exports = {
   database: process.env.DB_NAME,
   synchronize: false,
   logging: true,
-  entities: ['entities'],
+  entities: ['./entities/**/*'],
   cli: {
-    entitiesDir: 'entities',
+    entitiesDir: './entities',
   }
 }

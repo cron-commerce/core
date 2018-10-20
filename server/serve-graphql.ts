@@ -3,9 +3,13 @@ import * as Koa from 'koa'
 
 import Shop, {resolvers as shopResolvers} from '../graphql/shop'
 
+const Query = `
+  type Query
+`
+
 const apolloServer = new ApolloServer({
   resolvers: [shopResolvers],
-  typeDefs: [Shop],
+  typeDefs: [Query, Shop],
 })
 
 export default (app: Koa) => {
