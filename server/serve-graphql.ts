@@ -2,7 +2,6 @@ import {ApolloServer} from 'apollo-server-koa'
 import * as Koa from 'koa'
 
 import Shop, {resolvers as shopResolvers} from '../graphql/shop'
-import User, {resolvers as userResolvers} from '../graphql/user'
 
 const Query = `
   type Mutation
@@ -10,8 +9,8 @@ const Query = `
 `
 
 const apolloServer = new ApolloServer({
-  resolvers: [shopResolvers, userResolvers],
-  typeDefs: [Query, Shop, User],
+  resolvers: [shopResolvers],
+  typeDefs: [Query, Shop],
 })
 
 export default (app: Koa) => {
