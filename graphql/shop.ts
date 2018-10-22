@@ -6,10 +6,12 @@ const typeDef = `
   type Shop {
     id: ID!
     name: String
+    stripePublishableKey: String
     stripeUserId: String
   }
 
   input ShopInput {
+    stripePublishableKey: String
     stripeUserId: String
   }
 

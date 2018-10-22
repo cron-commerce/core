@@ -10,6 +10,9 @@ export class Shop {
   public name: string
 
   @Column({nullable: true})
+  public stripePublishableKey: string
+
+  @Column({nullable: true})
   public stripeUserId: string
 
   @Column({nullable: true})
