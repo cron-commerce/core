@@ -1,6 +1,7 @@
 import {ApolloServer} from 'apollo-server-koa'
 import * as Koa from 'koa'
 
+import ShippingZone, {resolvers as shippingZoneResolvers} from '../graphql/shipping-zone'
 import Shop, {resolvers as shopResolvers} from '../graphql/shop'
 
 const Query = `
@@ -9,8 +10,8 @@ const Query = `
 `
 
 const apolloServer = new ApolloServer({
-  resolvers: [shopResolvers],
-  typeDefs: [Query, Shop],
+  resolvers: [shippingZoneResolvers, shopResolvers],
+  typeDefs: [Query, ShippingZone, Shop],
 })
 
 export default (app: Koa) => {
