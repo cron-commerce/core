@@ -9,7 +9,10 @@ export class Shop {
   @Index({unique: true})
   public name: string
 
-  @Column()
+  @Column({nullable: true})
+  public stripeUserId: string
+
+  @Column({nullable: true})
   public accessToken: string
 
   public static findByName = (name: string): Promise<Shop> => {

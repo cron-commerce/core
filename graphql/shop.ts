@@ -6,10 +6,16 @@ const typeDef = `
   type Shop {
     id: ID!
     name: String
+    stripeUserId: String
+  }
+
+  input ShopInput {
+    stripeUserId: String
   }
 
   extend type Mutation {
     saveShopAccessToken(name: String!, accessToken: String!): Shop
+    updateShop(name: String!, input: ShopInput): Shop
   }
 
   extend type Query {
@@ -23,7 +29,7 @@ export const resolvers = {
   Mutation: {
     saveShopAccessToken: async (obj, args, context, info) => {
       const entityManager = getManager()
-      let shop = await entityManager.findOne(Shop, {where: {name: args.name}})
+      let shop = await Shop.findByName(args.name)
 
       if (!shop) {
         shop = new Shop()
@@ -35,12 +41,14 @@ export const resolvers = {
 
       return shop
     },
+
+    updateShop: async (obj, args, context, info) => {
+      const entityManager = getManager()
+      await entityManager.update(Shop, {name: args.name}, {...args.input})
+      return Shop.findByName(args.name)
+    }
   },
   Query: {
-    shop: async (obj, args, context, info) => {
-      const entityManager = getManager()
-      const shop = await entityManager.findOne(Shop, {where: {name: args.name}})
-      return shop
-    },
+    shop: async (obj, args, context, info) => Shop.findByName(args.name),
   },
 }

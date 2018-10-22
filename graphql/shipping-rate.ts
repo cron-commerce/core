@@ -23,9 +23,15 @@ export const resolvers = {
         title: 'USPS Priority Mail',
         code: 'usps-priority',
         price: 999,
+        description: '2 Business Days',
+        currency: 'USD',
+      }, {
+        title: 'USPS Overnight',
+        code: 'usps-overnight',
+        price: 1999,
         description: '1 Business Day',
         currency: 'USD',
-      }]
+      },]
     },
   },
 }
