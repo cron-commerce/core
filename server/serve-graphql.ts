@@ -1,10 +1,12 @@
 import {ApolloServer} from 'apollo-server-koa'
 import * as Koa from 'koa'
 
-import Country, {resolvers as countryResolvers} from '../graphql/country'
-import ShippingRate, {resolvers as shippingRateResolvers} from '../graphql/shipping-rate'
-import ShippingZone, {resolvers as shippingZoneResolvers} from '../graphql/shipping-zone'
-import Shop, {resolvers as shopResolvers} from '../graphql/shop'
+import BigInt, {resolvers as BigIntResolvers} from '../graphql/big-int'
+import Checkout, {resolvers as CheckoutResolvers} from '../graphql/checkout'
+import Country, {resolvers as CountryResolvers} from '../graphql/country'
+import ShippingRate, {resolvers as ShippingRateResolvers} from '../graphql/shipping-rate'
+import ShippingZone, {resolvers as ShippingZoneResolvers} from '../graphql/shipping-zone'
+import Shop, {resolvers as ShopResolvers} from '../graphql/shop'
 
 const Query = `
   type Mutation
@@ -12,8 +14,8 @@ const Query = `
 `
 
 const apolloServer = new ApolloServer({
-  resolvers: [countryResolvers, shippingRateResolvers, shippingZoneResolvers, shopResolvers],
-  typeDefs: [Country, ShippingRate, ShippingZone, Query, Shop],
+  resolvers: [BigIntResolvers, CheckoutResolvers, CountryResolvers, ShippingRateResolvers, ShippingZoneResolvers, ShopResolvers],
+  typeDefs: [BigInt, Checkout, Country, ShippingRate, ShippingZone, Query, Shop],
 })
 
 export default (app: Koa) => {
