@@ -1,6 +1,8 @@
 import * as Shopify from 'shopify-api-node'
 import * as Stripe from 'stripe'
+import {getManager} from 'typeorm'
 
+import {Customer} from '../entities/customer'
 import {Shop} from '../entities/shop'
 
 const typeDef = `
@@ -45,26 +47,104 @@ const typeDef = `
   }
 
   extend type Mutation {
-    createCheckout(shopName: String!, input: CheckoutInput!): [Checkout]
+    createCheckout(shopName: String!, input: CheckoutInput!): Checkout
   }
 `
 
 export default typeDef
 
+interface CreateCheckoutArgs {
+  input: {
+    cart: {
+      items: {
+        quantity: number,
+        variant_id: number,
+      }[],
+    },
+    customerEmail: string,
+    shippingAddress: {
+      address1: string,
+      address2: string,
+      city: string,
+      country: string,
+      firstName: string,
+      lastName: string,
+      province: string,
+      zip: string,
+    },
+    shippingRate: {
+      title: string,
+      code: string,
+      price: number,
+      description: string,
+      currency: string,
+    },
+    stripeToken: string,
+  },
+  shopName: string,
+}
+
 export const resolvers = {
   Mutation: {
-    createCheckout: async (obj, args, context, info) => {
+    createCheckout: async (obj, args: CreateCheckoutArgs, context, info) => {
+      const {cart} = args.input
+      const manager = getManager()
       const shop = await Shop.findByName(args.shopName)
       const shopify = new Shopify({accessToken: shop.accessToken, shopName: args.shopName})
       const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
+      const stripeConnectArgs = {stripe_account: shop.stripeUserId}
 
-      // fetch variants from shopify to pull prices
-      // fetch shipping rates to get the price for the selected one
-      // create stripe customer
+      // fetch variants from shopify to pull current prices
+      const variants = await Promise.all(cart.items.map(item => shopify.productVariant.get(item.variant_id)))
+      const subtotal = cart.items.reduce((sum, item) => {
+        const variant = variants.find(variant => variant.id === item.variant_id)
+        return sum + (parseFloat(variant.price) * item.quantity)
+      }, 0.0)
+
+      // TODO: fetch shipping rates to get the price for the selected one, as well as tax
+      // TODO: calculate total
+      const total = subtotal
+
+      // find or create local customer
+      let customer = await manager.findOne(Customer, {where: {email: args.input.customerEmail}})
+      if (!customer) {
+        customer = new Customer()
+        customer.email = args.input.customerEmail
+        await manager.insert(Customer, customer)
+      }
+      
+      // if no stripeCustomerId, create stripe customer
+      if (!customer.stripeCustomerId) {
+        const stripeCustomer = await stripe.customers.create({
+          source: args.input.stripeToken,
+          email: customer.email,
+        }, stripeConnectArgs)
+        customer.stripeCustomerId = stripeCustomer.id
+        await manager.save(customer)
+      }
+
+      // if there is a stripe customer, update the default credit card
+      else {
+        await stripe.customers.update(customer.stripeCustomerId, {
+          source: args.input.stripeToken,
+        }, stripeConnectArgs)
+      }
+
       // create the stripe charge
+      const charge = await stripe.charges.create({
+        amount: Math.ceil(total * 100),
+        currency: 'usd',
+        customer: customer.stripeCustomerId,
+      }, stripeConnectArgs)
+
       // create the order in shopify
+      // create subscriptions for all applicable items
+
+      // TODO: throw an error if the order total does not equal the incoming cart total
+      // TODO: currencies
+      // TODO: discounts
     
-      return []
+      return {}
     },
   },
 }
