@@ -87,7 +87,7 @@ export const resolvers = {
   Mutation: {
     createCheckout: async (obj, args: CreateCheckoutArgs, context, info) => {
       const shop = await Shop.findOne({where: {name: args.shopName}})
-      const shopify = new Shopify({accessToken: shop.accessToken, shopName: args.shopName})
+      const shopify = new Shopify({accessToken: shop.shopifyAccessToken, shopName: args.shopName})
       const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
       const stripeConnectArgs = {stripe_account: shop.stripeUserId}
 
@@ -127,6 +127,8 @@ export const resolvers = {
         }, stripeConnectArgs)
       }
 
+      console.log(customer)
+
       // create the stripe charge
       const charge = await stripe.charges.create({
         amount: Math.ceil(total * 100),
@@ -134,7 +136,17 @@ export const resolvers = {
         customer: customer.stripeCustomerId,
       }, stripeConnectArgs)
 
+      console.log(charge)
+
       // create the order in shopify
+      const shopifyOrder = await shopify.order.create({
+        email: args.input.customerEmail,
+        line_items: args.input.cart.items,
+        send_receipt: true,
+      })
+
+      console.log(shopifyOrder)
+
       // create subscriptions for all applicable items
 
       // TODO: throw an error if the order total does not equal the incoming cart total

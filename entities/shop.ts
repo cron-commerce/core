@@ -1,4 +1,4 @@
-import {BaseEntity, Column, Entity, getManager, Index, PrimaryGeneratedColumn} from 'typeorm'
+import {BaseEntity, Column, Entity, Index, PrimaryGeneratedColumn} from 'typeorm'
 
 @Entity({name: 'shops'})
 export class Shop extends BaseEntity {
@@ -16,10 +16,5 @@ export class Shop extends BaseEntity {
   public stripeUserId: string
 
   @Column({nullable: true})
-  public accessToken: string
-
-  public static findByName = (name: string): Promise<Shop> => {
-    const entityManager = getManager()
-    return entityManager.findOne(Shop, {where: {name}})
-  }
+  public shopifyAccessToken: string
 }

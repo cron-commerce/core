@@ -35,6 +35,7 @@ export const resolvers = {
         shop.name = args.name
       }
     
+      shop.shopifyAccessToken = args.accessToken
       await shop.save()
 
       return shop
