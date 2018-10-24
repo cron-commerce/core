@@ -1,7 +1,7 @@
-import {Column, Entity, getManager, Index, PrimaryGeneratedColumn} from 'typeorm'
+import {BaseEntity, Column, Entity, getManager, Index, PrimaryGeneratedColumn} from 'typeorm'
 
 @Entity({name: 'shops'})
-export class Shop {
+export class Shop extends BaseEntity {
   @PrimaryGeneratedColumn()
   public id: number
 

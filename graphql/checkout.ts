@@ -1,6 +1,5 @@
 import * as Shopify from 'shopify-api-node'
 import * as Stripe from 'stripe'
-import {getManager} from 'typeorm'
 
 import {Customer} from '../entities/customer'
 import {Shop} from '../entities/shop'
@@ -87,16 +86,14 @@ interface CreateCheckoutArgs {
 export const resolvers = {
   Mutation: {
     createCheckout: async (obj, args: CreateCheckoutArgs, context, info) => {
-      const {cart} = args.input
-      const manager = getManager()
-      const shop = await Shop.findByName(args.shopName)
+      const shop = await Shop.findOne({where: {name: args.shopName}})
       const shopify = new Shopify({accessToken: shop.accessToken, shopName: args.shopName})
       const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
       const stripeConnectArgs = {stripe_account: shop.stripeUserId}
 
       // fetch variants from shopify to pull current prices
-      const variants = await Promise.all(cart.items.map(item => shopify.productVariant.get(item.variant_id)))
-      const subtotal = cart.items.reduce((sum, item) => {
+      const variants = await Promise.all(args.input.cart.items.map(item => shopify.productVariant.get(item.variant_id)))
+      const subtotal = args.input.cart.items.reduce((sum, item) => {
         const variant = variants.find(variant => variant.id === item.variant_id)
         return sum + (parseFloat(variant.price) * item.quantity)
       }, 0.0)
@@ -106,11 +103,11 @@ export const resolvers = {
       const total = subtotal
 
       // find or create local customer
-      let customer = await manager.findOne(Customer, {where: {email: args.input.customerEmail}})
+      let customer = await Customer.findOne(Customer, {where: {email: args.input.customerEmail}})
       if (!customer) {
         customer = new Customer()
         customer.email = args.input.customerEmail
-        await manager.insert(Customer, customer)
+        await customer.save()
       }
       
       // if no stripeCustomerId, create stripe customer
@@ -120,7 +117,7 @@ export const resolvers = {
           email: customer.email,
         }, stripeConnectArgs)
         customer.stripeCustomerId = stripeCustomer.id
-        await manager.save(customer)
+        await customer.save()
       }
 
       // if there is a stripe customer, update the default credit card
