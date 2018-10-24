@@ -93,6 +93,8 @@ export const resolvers = {
 
       // fetch variants from shopify to pull current prices
       const variants = await Promise.all(args.input.cart.items.map(item => shopify.productVariant.get(item.variant_id)))
+
+      // calculate the subtotal
       const subtotal = args.input.cart.items.reduce((sum, item) => {
         const variant = variants.find(variant => variant.id === item.variant_id)
         return sum + (parseFloat(variant.price) * item.quantity)
@@ -100,6 +102,7 @@ export const resolvers = {
 
       // TODO: fetch shipping rates to get the price for the selected one, as well as tax
       // TODO: calculate total
+      // TODO: throw an error if the order total does not equal the incoming cart total
       const total = subtotal
 
       // find or create local customer
@@ -127,16 +130,12 @@ export const resolvers = {
         }, stripeConnectArgs)
       }
 
-      console.log(customer)
-
       // create the stripe charge
       const charge = await stripe.charges.create({
         amount: Math.ceil(total * 100),
         currency: 'usd',
         customer: customer.stripeCustomerId,
       }, stripeConnectArgs)
-
-      console.log(charge)
 
       // create the order in shopify
       const shopifyOrder = await shopify.order.create({
@@ -145,15 +144,13 @@ export const resolvers = {
         send_receipt: true,
       })
 
-      console.log(shopifyOrder)
-
       // create subscriptions for all applicable items
 
-      // TODO: throw an error if the order total does not equal the incoming cart total
+      
       // TODO: currencies
       // TODO: discounts
     
-      return {}
+      return {id: 123}
     },
   },
 }
