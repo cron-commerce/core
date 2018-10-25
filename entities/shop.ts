@@ -1,6 +1,7 @@
 import {BaseEntity, Column, Entity, Index, OneToMany, PrimaryGeneratedColumn} from 'typeorm'
 
 import {Customer} from './customer'
+import {Subscribable} from './subscribable'
 import {Subscription} from './subscription'
 
 @Entity({name: 'shops'})
@@ -20,6 +21,9 @@ export class Shop extends BaseEntity {
 
   @Column({nullable: true})
   public shopifyAccessToken: string
+
+  @OneToMany(type => Subscribable, subscribable => subscribable.shop)
+  public subscribables: Subscribable[]
 
   @OneToMany(type => Subscription, subscription => subscription.shop)
   public subscriptions: Subscription[]
