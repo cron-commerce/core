@@ -1,6 +1,9 @@
-import {BaseEntity, Entity, ManyToOne, PrimaryGeneratedColumn} from 'typeorm'
+import {BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn} from 'typeorm'
 
 import {Shop} from './shop'
+import {SubscribableProduct} from './subscribable-product'
+
+enum Types { Bundle }
 
 @Entity({name: 'subscribables'})
 export class Subscribable extends BaseEntity {
@@ -9,4 +12,10 @@ export class Subscribable extends BaseEntity {
 
   @ManyToOne(type => Shop, shop => shop.subscribables)
   public shop: Shop
+
+  @Column('enum', {enum: Types})
+  public type: string
+
+  @OneToMany(type => SubscribableProduct, product => product.subscribable)
+  public products: SubscribableProduct[]
 }
