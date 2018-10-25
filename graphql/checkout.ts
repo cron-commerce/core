@@ -113,19 +113,19 @@ export const resolvers = {
         await customer.save()
       }
       
-      // if no stripeCustomerId, create stripe customer
-      if (!customer.stripeCustomerId) {
+      // if no stripeId, create stripe customer
+      if (!customer.stripeId) {
         const stripeCustomer = await stripe.customers.create({
           source: args.input.stripeToken,
           email: customer.email,
         }, stripeConnectArgs)
-        customer.stripeCustomerId = stripeCustomer.id
+        customer.stripeId = stripeCustomer.id
         await customer.save()
       }
 
       // if there is a stripe customer, update the default credit card
       else {
-        await stripe.customers.update(customer.stripeCustomerId, {
+        await stripe.customers.update(customer.stripeId, {
           source: args.input.stripeToken,
         }, stripeConnectArgs)
       }
@@ -134,7 +134,7 @@ export const resolvers = {
       const charge = await stripe.charges.create({
         amount: Math.ceil(total * 100),
         currency: 'usd',
-        customer: customer.stripeCustomerId,
+        customer: customer.stripeId,
       }, stripeConnectArgs)
 
       // create the order in shopify
