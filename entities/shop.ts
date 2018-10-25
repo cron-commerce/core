@@ -1,4 +1,7 @@
-import {BaseEntity, Column, Entity, Index, PrimaryGeneratedColumn} from 'typeorm'
+import {BaseEntity, Column, Entity, Index, OneToMany, PrimaryGeneratedColumn} from 'typeorm'
+
+import {Customer} from './customer'
+import {Subscription} from './subscription'
 
 @Entity({name: 'shops'})
 export class Shop extends BaseEntity {
@@ -17,4 +20,10 @@ export class Shop extends BaseEntity {
 
   @Column({nullable: true})
   public shopifyAccessToken: string
+
+  @OneToMany(type => Subscription, subscription => subscription.shop)
+  public subscriptions: Subscription[]
+
+  @OneToMany(type => Customer, customer => customer.shop)
+  public customers: Customer[]
 }

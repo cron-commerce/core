@@ -106,10 +106,11 @@ export const resolvers = {
       const total = subtotal
 
       // find or create local customer
-      let customer = await Customer.findOne(Customer, {where: {email: args.input.customerEmail}})
+      let customer = await Customer.findOne(Customer, {where: {email: args.input.customerEmail, shop}})
       if (!customer) {
         customer = new Customer()
         customer.email = args.input.customerEmail
+        customer.shop = shop
         await customer.save()
       }
       

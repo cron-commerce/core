@@ -1,5 +1,6 @@
-import {BaseEntity, Column, Entity, Index, OneToMany, PrimaryGeneratedColumn} from 'typeorm'
+import {BaseEntity, Column, Entity, Index, OneToMany, ManyToOne, PrimaryGeneratedColumn} from 'typeorm'
 
+import {Shop} from './shop'
 import {Subscription} from './subscription'
 
 @Entity({name: 'customers'})
@@ -19,4 +20,7 @@ export class Customer extends BaseEntity {
 
   @OneToMany(type => Subscription, subscription => subscription.customer)
   public subscriptions: Subscription[]
+
+  @ManyToOne(type => Shop, shop => shop.customers)
+  public shop: Shop
 }
