@@ -3,7 +3,7 @@ import {BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn
 import {Shop} from './shop'
 import {SubscribableProduct} from './subscribable-product'
 
-enum Types { Bundle }
+export enum Types {Bundle = 'Bundle'}
 
 @Entity({name: 'subscribables'})
 export class Subscribable extends BaseEntity {
