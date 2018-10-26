@@ -2,6 +2,7 @@ import {BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn
 
 import {Shop} from './shop'
 import {SubscribableProduct} from './subscribable-product'
+import {SubscribableSize} from './subscribable-size'
 
 export enum Types {Bundle = 'Bundle'}
 
@@ -18,4 +19,7 @@ export class Subscribable extends BaseEntity {
 
   @OneToMany(type => SubscribableProduct, product => product.subscribable)
   public products: SubscribableProduct[]
+
+  @OneToMany(type => SubscribableSize, size => size.subscribable)
+  public sizes: SubscribableSize[]
 }
