@@ -1,4 +1,4 @@
-import {BaseEntity, Entity, ManyToOne, PrimaryGeneratedColumn} from 'typeorm'
+import {BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn} from 'typeorm'
 
 import {Subscribable} from './subscribable'
 
@@ -9,4 +9,10 @@ export class SubscribableSize extends BaseEntity {
 
   @ManyToOne(type => Subscribable, subscribable => subscribable.sizes)
   public subscribable: Subscribable[]
+
+  @Column()
+  public numVariants: number
+
+  @Column('decimal', {precision: 15, scale: 2})
+  public price: number
 }
