@@ -4,7 +4,7 @@ import {Shop} from './shop'
 import {SubscribableProduct} from './subscribable-product'
 import {SubscribableSize} from './subscribable-size'
 
-export enum Types {Bundle = 'Bundle'}
+export enum Types {Bundle = 'Bundle', Single = 'Single'}
 
 @Entity({name: 'subscribables'})
 export class Subscribable extends BaseEntity {
