@@ -2,7 +2,7 @@ import * as Shopify from 'shopify-api-node'
 import * as Stripe from 'stripe'
 
 import {Customer} from '../entities/customer'
-import {Shop} from '../entities/shop'
+import {Context} from '../server/set-graphql-context'
 
 const typeDef = `
   type Checkout {
@@ -46,7 +46,7 @@ const typeDef = `
   }
 
   extend type Mutation {
-    createCheckout(shopName: String!, input: CheckoutInput!): Checkout
+    createCheckout(input: CheckoutInput!): Checkout
   }
 `
 
@@ -85,11 +85,10 @@ interface CreateCheckoutArgs {
 
 export const resolvers = {
   Mutation: {
-    createCheckout: async (obj, args: CreateCheckoutArgs, context, info) => {
-      const shop = await Shop.findOne({where: {name: args.shopName}})
-      const shopify = new Shopify({accessToken: shop.shopifyAccessToken, shopName: args.shopName})
+    createCheckout: async (obj, args: CreateCheckoutArgs, context: Context, info) => {
+      const shopify = new Shopify({accessToken: context.shop.shopifyAccessToken, shopName: context.shop.name})
       const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
-      const stripeConnectArgs = {stripe_account: shop.stripeUserId}
+      const stripeConnectArgs = {stripe_account: context.shop.stripeUserId}
 
       // fetch variants from shopify to pull current prices
       const variants = await Promise.all(args.input.cart.items.map(item => shopify.productVariant.get(item.variant_id)))
@@ -106,11 +105,11 @@ export const resolvers = {
       const total = subtotal
 
       // find or create local customer
-      let customer = await Customer.findOne(Customer, {where: {email: args.input.customerEmail, shop}})
+      let customer = await Customer.findOne(Customer, {where: {email: args.input.customerEmail, shop: context.shop}})
       if (!customer) {
         customer = new Customer()
         customer.email = args.input.customerEmail
-        customer.shop = shop
+        customer.shop = context.shop
         await customer.save()
       }
       

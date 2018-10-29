@@ -6,6 +6,7 @@ import Checkout, {resolvers as CheckoutResolvers} from '../graphql/checkout'
 import ShippingRate, {resolvers as ShippingRateResolvers} from '../graphql/shipping-rate'
 import Shop, {resolvers as ShopResolvers} from '../graphql/shop'
 import Subscribable, {resolvers as SubscribableResolvers} from '../graphql/subscribable'
+import setGraphQLContext from './set-graphql-context'
 
 const Query = `
   type Mutation
@@ -13,9 +14,7 @@ const Query = `
 `
 
 const apolloServer = new ApolloServer({
-  context: ({ctx}: {ctx: Koa.Context}) => ({
-    shopName: ctx.headers['x-shop'],
-  }),
+  context: setGraphQLContext,
   resolvers: [BigIntResolvers, CheckoutResolvers, ShippingRateResolvers, ShopResolvers, SubscribableResolvers],
   typeDefs: [BigInt, Checkout, ShippingRate, Query, Shop, Subscribable],
 })

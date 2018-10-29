@@ -10,7 +10,7 @@ const typeDef = `
   }
 
   extend type Query {
-    shippingRates(shopName: String!): [ShippingRate]
+    shippingRates: [ShippingRate]
   }
 `
 
