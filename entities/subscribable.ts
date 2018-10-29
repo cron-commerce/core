@@ -17,9 +17,9 @@ export class Subscribable extends BaseEntity {
   @Column('enum', {enum: Types})
   public type: string
 
-  @OneToMany(type => SubscribableProduct, product => product.subscribable)
+  @OneToMany(type => SubscribableProduct, product => product.subscribable, {cascade: true})
   public products: SubscribableProduct[]
 
-  @OneToMany(type => SubscribableSize, size => size.subscribable)
+  @OneToMany(type => SubscribableSize, size => size.subscribable, {cascade: true})
   public sizes: SubscribableSize[]
 }

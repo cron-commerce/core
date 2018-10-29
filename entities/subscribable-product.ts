@@ -7,7 +7,7 @@ export class SubscribableProduct extends BaseEntity {
   @PrimaryGeneratedColumn()
   public id: number
 
-  @Column()
+  @Column('bigint')
   public shopifyProductId: number
 
   @ManyToOne(type => Subscribable, subscribable => subscribable.products)
