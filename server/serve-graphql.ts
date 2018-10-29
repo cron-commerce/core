@@ -13,6 +13,9 @@ const Query = `
 `
 
 const apolloServer = new ApolloServer({
+  context: ({ctx}: {ctx: Koa.Context}) => ({
+    shopName: ctx.headers['x-shop'],
+  }),
   resolvers: [BigIntResolvers, CheckoutResolvers, ShippingRateResolvers, ShopResolvers, SubscribableResolvers],
   typeDefs: [BigInt, Checkout, ShippingRate, Query, Shop, Subscribable],
 })

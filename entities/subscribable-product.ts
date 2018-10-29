@@ -1,4 +1,4 @@
-import {BaseEntity, Entity, ManyToOne, PrimaryGeneratedColumn} from 'typeorm'
+import {BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn} from 'typeorm'
 
 import {Subscribable} from './subscribable'
 
@@ -6,6 +6,9 @@ import {Subscribable} from './subscribable'
 export class SubscribableProduct extends BaseEntity {
   @PrimaryGeneratedColumn()
   public id: number
+
+  @Column()
+  public shopifyProductId: number
 
   @ManyToOne(type => Subscribable, subscribable => subscribable.products)
   public subscribable: Subscribable
