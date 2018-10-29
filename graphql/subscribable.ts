@@ -6,12 +6,12 @@ const typeDef = `
   }
 
   input SubscribableProductInput {
-    shopifyProductId: Int
+    shopifyProductId: BigInt
   }
 
   input SubscribableSizeInput {
     numVariants: Int
-    price: Int
+    price: String
   }
 
   input SubscribableInput {
