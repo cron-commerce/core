@@ -46,6 +46,7 @@ const typeDef = `
 
   extend type Query {
     subscribable(id: ID!): Subscribable
+    subscribables: [Subscribable]
     newSubscribableOptions: NewSubscribableOptions
   }
 `
@@ -78,6 +79,7 @@ export const resolvers = {
   },
   Query: {
     subscribable: async (obj, args, context, info) => Subscribable.findOne(args.id, {where: {shop: context.shop}}),
+    subscribables: async (obj, args, context, info) => Subscribable.find({where: {shop: context.shop}}),
     newSubscribableOptions: async (obj, args, context, info) => ({types: Object.keys(Types)}),
   },
 }
