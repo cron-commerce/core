@@ -23,8 +23,21 @@ const typeDef = `
     type: String
   }
 
+  type SubscribableProduct {
+    id: ID!
+    shopifyProductId: BigInt
+  }
+
+  type SubscribableSize {
+    id: ID!
+    numVariants: Int
+    price: String
+  }
+
   type Subscribable {
     id: ID!
+    products: [SubscribableProduct]
+    sizes: [SubscribableSize]
   }
 
   extend type Mutation {
@@ -32,6 +45,7 @@ const typeDef = `
   }
 
   extend type Query {
+    subscribable(id: ID!): Subscribable
     newSubscribableOptions: NewSubscribableOptions
   }
 `
@@ -63,8 +77,7 @@ export const resolvers = {
     },
   },
   Query: {
-    newSubscribableOptions: async (obj, args, context, info) => ({
-      types: Object.keys(Types),
-    }),
+    subscribable: async (obj, args, context, info) => Subscribable.findOne(args.id, {where: {shop: context.shop}}),
+    newSubscribableOptions: async (obj, args, context, info) => ({types: Object.keys(Types)}),
   },
 }
