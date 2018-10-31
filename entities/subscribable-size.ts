@@ -13,6 +13,6 @@ export class SubscribableSize extends BaseEntity {
   @Column()
   public numVariants: number
 
-  @Column('decimal', {precision: 15, scale: 2})
+  @Column()
   public price: number
 }

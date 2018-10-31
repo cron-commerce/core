@@ -1,13 +1,13 @@
 const typeDef = `
   input SubscribableSizeInput {
     numVariants: Int
-    price: String
+    price: Int
   }
 
   type SubscribableSize {
     id: ID!
     numVariants: Int
-    price: String
+    price: Int
   }
 `
 
