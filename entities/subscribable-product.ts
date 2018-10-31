@@ -12,4 +12,6 @@ export class SubscribableProduct extends BaseEntity {
 
   @ManyToOne(type => Subscribable, subscribable => subscribable.products)
   public subscribable: Subscribable
+  
+  public shopifyProduct: object
 }

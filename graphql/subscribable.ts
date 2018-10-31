@@ -1,3 +1,5 @@
+import * as Shopify from 'shopify-api-node'
+
 import {Types, Subscribable} from '../entities/subscribable'
 import {SubscribableProduct} from '../entities/subscribable-product'
 import {SubscribableSize} from '../entities/subscribable-size'
@@ -61,7 +63,14 @@ export const resolvers = {
     },
   },
   Query: {
-    subscribable: async (obj, args, context, info) => Subscribable.findOne({where: {handle: args.handle, shop: context.shop}}),
+    subscribable: async (obj, args, context: Context, info) => {
+      const shopify = new Shopify({accessToken: context.shop.shopifyAccessToken, shopName: context.shop.name})
+      const subscribable = await Subscribable.findOne({where: {handle: args.handle, shop: context.shop}})
+      for (let i = 0; i < subscribable.products.length; ++i) {
+        subscribable.products[i].shopifyProduct = await shopify.product.get(subscribable.products[i].shopifyProductId)
+      }
+      return subscribable
+    },
     subscribables: async (obj, args, context, info) => Subscribable.find({where: {shop: context.shop}}),
     newSubscribableOptions: async (obj, args, context, info) => ({types: Object.keys(Types)}),
   },

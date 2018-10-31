@@ -3,9 +3,13 @@ const typeDef = `
     shopifyProductId: BigInt
   }
 
+  type ShopifyProduct {
+    id: ID!
+  }
+
   type SubscribableProduct {
     id: ID!
-    shopifyProductId: BigInt
+    shopifyProduct: ShopifyProduct
   }
 `
 
