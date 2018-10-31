@@ -96,8 +96,8 @@ export const resolvers = {
       // calculate the subtotal
       const subtotal = args.input.cart.items.reduce((sum, item) => {
         const variant = variants.find(variant => variant.id === item.variant_id)
-        return sum + (parseFloat(variant.price) * item.quantity)
-      }, 0.0)
+        return sum + (Math.ceil(parseFloat(variant.price) * 100) * item.quantity)
+      }, 0)
 
       // TODO: fetch shipping rates to get the price for the selected one, as well as tax
       // TODO: calculate total
@@ -132,7 +132,7 @@ export const resolvers = {
 
       // create the stripe charge
       const charge = await stripe.charges.create({
-        amount: Math.ceil(total * 100),
+        amount: total,
         currency: 'usd',
         customer: customer.stripeId,
       }, stripeConnectArgs)
