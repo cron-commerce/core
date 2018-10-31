@@ -9,7 +9,7 @@ const typeDef = `
   }
 
   input SubscribableInput {
-    path: String
+    handle: String
     products: [SubscribableProductInput]
     sizes: [SubscribableSizeInput]
     type: String
@@ -17,7 +17,7 @@ const typeDef = `
 
   type Subscribable {
     id: ID!
-    path: String
+    handle: String
     products: [SubscribableProduct]
     sizes: [SubscribableSize]
   }
@@ -27,7 +27,7 @@ const typeDef = `
   }
 
   extend type Query {
-    subscribable(id: ID!): Subscribable
+    subscribable(handle: String!): Subscribable
     subscribables: [Subscribable]
     newSubscribableOptions: NewSubscribableOptions
   }
@@ -39,7 +39,7 @@ export const resolvers = {
   Mutation: {
     createSubscribable: async (obj, args, context: Context, info) => {
       const subscribable = new Subscribable()
-      subscribable.path = args.input.path
+      subscribable.handle = args.input.handle
       subscribable.type = args.input.type
       subscribable.shop = context.shop
 
@@ -61,7 +61,7 @@ export const resolvers = {
     },
   },
   Query: {
-    subscribable: async (obj, args, context, info) => Subscribable.findOne(args.id, {where: {shop: context.shop}}),
+    subscribable: async (obj, args, context, info) => Subscribable.findOne({where: {handle: args.handle, shop: context.shop}}),
     subscribables: async (obj, args, context, info) => Subscribable.find({where: {shop: context.shop}}),
     newSubscribableOptions: async (obj, args, context, info) => ({types: Object.keys(Types)}),
   },
