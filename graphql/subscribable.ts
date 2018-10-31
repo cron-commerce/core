@@ -8,34 +8,16 @@ const typeDef = `
     types: [String]
   }
 
-  input SubscribableProductInput {
-    shopifyProductId: BigInt
-  }
-
-  input SubscribableSizeInput {
-    numVariants: Int
-    price: String
-  }
-
   input SubscribableInput {
+    path: String
     products: [SubscribableProductInput]
     sizes: [SubscribableSizeInput]
     type: String
   }
 
-  type SubscribableProduct {
-    id: ID!
-    shopifyProductId: BigInt
-  }
-
-  type SubscribableSize {
-    id: ID!
-    numVariants: Int
-    price: String
-  }
-
   type Subscribable {
     id: ID!
+    path: String
     products: [SubscribableProduct]
     sizes: [SubscribableSize]
   }
@@ -57,6 +39,7 @@ export const resolvers = {
   Mutation: {
     createSubscribable: async (obj, args, context: Context, info) => {
       const subscribable = new Subscribable()
+      subscribable.path = args.input.path
       subscribable.type = args.input.type
       subscribable.shop = context.shop
 

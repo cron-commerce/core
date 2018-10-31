@@ -11,6 +11,9 @@ export class Subscribable extends BaseEntity {
   @PrimaryGeneratedColumn()
   public id: number
 
+  @Column()
+  public path: string
+
   @ManyToOne(type => Shop, shop => shop.subscribables)
   public shop: Shop
 
