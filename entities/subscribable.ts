@@ -1,4 +1,4 @@
-import {BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn} from 'typeorm'
+import {BaseEntity, Column, Entity, Index, ManyToOne, OneToMany, PrimaryGeneratedColumn} from 'typeorm'
 
 import {Shop} from './shop'
 import {SubscribableProduct} from './subscribable-product'
@@ -7,6 +7,7 @@ import {SubscribableSize} from './subscribable-size'
 export enum Types {Bundle = 'Bundle', Single = 'Single'}
 
 @Entity({name: 'subscribables'})
+@Index(['shop', 'path'], {unique: true})
 export class Subscribable extends BaseEntity {
   @PrimaryGeneratedColumn()
   public id: number
